@@ -6,7 +6,6 @@ import { EarringProduct } from "@/types/earrings";
 import { earringList } from '@/data/jewellery/earringProducts';
 
 
-
 export default function EarringDetailPage() {
   const [product, setProduct] = useState<EarringProduct | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -17,6 +16,9 @@ export default function EarringDetailPage() {
     address: '',
     message: ''
   });
+
+  // 1. Add state to handle form submission loading
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const pathParts = window.location.pathname.split('/');
@@ -32,8 +34,9 @@ export default function EarringDetailPage() {
 
   const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-  const handleOrderSubmit = () => {
-    // Basic validation
+  // 2. Update handleOrderSubmit to be async and use the API
+  const handleOrderSubmit = async () => {
+    // Basic validation (no change)
     if (!orderForm.name || !orderForm.phone || !orderForm.address) {
       alert('Please fill all required fields (*).');
       return;
@@ -43,28 +46,60 @@ export default function EarringDetailPage() {
         return;
     }
 
+    // Prevent double submission
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    // Prepare data for the API (remove timestamp, which is set by the backend)
     const orderData = {
       title: product.title,
       price: product.offerPrice,
       category: product.category,
-      id: window.location.pathname.split('/').pop(),
+      id: window.location.pathname.split('/').pop() || 'unknown', // Product ID
       name: orderForm.name,
       address: orderForm.address,
       phone: orderForm.phone,
       message: orderForm.message,
-      timestamp: new Date().toISOString()
     };
 
-    // Save to local storage
-    const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    existingOrders.push(orderData);
-    localStorage.setItem('orders', JSON.stringify(existingOrders));
+    try {
+      // 3. Call the API route
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    // Reset form and close dialog
-    setOrderForm({ name: '', phone: '', address: '', message: '' });
-    setShowOrderDialog(false);
-    
-    alert('Order placed successfully! We will contact you soon.');
+      // 4. Handle Rate Limiting (429 status)
+      if (response.status === 429) {
+        alert('You are submitting too quickly. Please wait 30 seconds and try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 5. Handle other errors
+      if (!response.ok) {
+        throw new Error('Failed to submit order. Please check your connection and try again.');
+      }
+
+      // 6. Handle success
+      setOrderForm({ name: '', phone: '', address: '', message: '' });
+      setShowOrderDialog(false);
+      alert('Order placed successfully! We will contact you soon.');
+
+    } catch (error) {
+      console.error('Order submission error:', error);
+      
+      // 7. FIX: Use a type assertion for error handling
+      const errorMessage = (error as Error).message || 'An unexpected error occurred.';
+      alert(errorMessage);
+
+    } finally {
+      // Re-enable the button
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -240,9 +275,10 @@ export default function EarringDetailPage() {
                 />
                 <button
                   type="submit"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition-colors text-lg"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting} // Use the new state
                 >
-                  Book Now
+                  {isSubmitting ? 'Placing Order...' : 'Book Now'}
                 </button>
               </form>
             </div>
@@ -252,4 +288,3 @@ export default function EarringDetailPage() {
     </>
   );
 }
-

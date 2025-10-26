@@ -14,7 +14,7 @@ import { ChainProduct } from "@/types/chains";
 import { earringList } from '@/data/jewellery/earringProducts';
 import { ringList } from '@/data/jewellery/ringProducts';
 import { bangleList } from '@/data/jewellery/bangleProducts';
-import { chainList } from '@/data/jewellery/chainProduct';
+import { chainList } from '@/data/jewellery/chainProducts';
 
 import JewelleryProductCard from '@/cards/jewelleryProduct';
 

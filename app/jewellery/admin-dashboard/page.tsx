@@ -8,7 +8,7 @@ import OrdersContent from '@/jewelleryComponenets/OrderAdminSection';
 const ProductsContent = () => (
     <div>
         <h2 className="text-2xl text-black poppins font-bold mb-6">Products Management</h2>
-        <div className=" p-6 rounded-lg shadow-md border border-gray-200">
+        <div className=" p-6 rounded-lg shadow-md border bg-white/70 border-gray-200">
             <p className="text-gray-700">Product management interface would go here.</p>
         </div>
     </div>

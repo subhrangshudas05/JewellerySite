@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react';
 import { User, Phone, MapPin, IndianRupee, Clock, Trash2, Edit, AlertTriangle, CheckCircle, PhoneCall } from 'lucide-react';
 
-// Define a type for our order objects, including the new status property
+// Define a type for our order objects, including the MongoDB _id
 interface Order {
+    _id: string; // Add MongoDB ObjectId (as string) for unique identification
     title: string;
     price: number;
     category: string;
-    id: string;
+    id: string; // Product ID
     name: string;
     address: string;
     phone: string;
     message: string;
-    timestamp: string;
+    timestamp: string; // Used as the unique key for CRUD operations via API
     status: 'Pending' | 'Confirmed' | 'Shipped' | 'Delivered' | 'Cancelled';
 }
 
@@ -22,20 +23,35 @@ export default function OrdersContent() {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [dialogState, setDialogState] = useState<'update' | 'delete' | null>(null);
     const [newStatus, setNewStatus] = useState<Order['status']>('Pending');
+    const [isLoading, setIsLoading] = useState(true); // State for loading orders
 
-    // Fetch and update orders from local storage
-    const fetchOrders = () => {
-        const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-        const ordersWithStatus = savedOrders.map((o: any) => ({ ...o, status: o.status || 'Pending' }));
-        ordersWithStatus.sort((a: Order, b: Order) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-        setOrders(ordersWithStatus);
+    // --- READ (GET) Operation ---
+    const fetchOrders = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('/api/orders');
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders from the server.');
+            }
+            const data: Order[] = await response.json();
+            
+            // The API route already sorts by timestamp, so we just set the data
+            setOrders(data);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            const errorMessage = (error as Error).message || 'Could not connect to the database.';
+            alert(errorMessage);
+            setOrders([]); // Clear orders on failure
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
         fetchOrders();
     }, []);
 
-    // Handlers for opening dialogs
+    // Handlers for opening dialogs (remain the same)
     const handleUpdateClick = (order: Order) => {
         setSelectedOrder(order);
         setNewStatus(order.status);
@@ -47,25 +63,61 @@ export default function OrdersContent() {
         setDialogState('delete');
     };
 
-    // Handlers for dialog actions
-    const handleUpdateStatus = () => {
+    // --- UPDATE (PATCH) Operation ---
+    const handleUpdateStatus = async () => {
         if (!selectedOrder) return;
-        const updatedOrders = orders.map(o => 
-            o.timestamp === selectedOrder.timestamp ? { ...o, status: newStatus } : o
-        );
-        localStorage.setItem('orders', JSON.stringify(updatedOrders));
-        fetchOrders(); // Re-fetch to update UI
-        setDialogState(null);
+        
+        try {
+            const response = await fetch('/api/orders', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                // Use the unique timestamp as the key for the update
+                body: JSON.stringify({ timestamp: selectedOrder.timestamp, status: newStatus }), 
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update order status.');
+            }
+
+            fetchOrders(); // Re-fetch to update UI
+            setDialogState(null);
+            alert(`Order ${selectedOrder.id} status updated to ${newStatus}.`);
+
+        } catch (error) {
+            console.error("Update error:", error);
+            const errorMessage = (error as Error).message || 'Failed to update order status.';
+            alert(errorMessage);
+        }
     };
 
-    const handleDeleteOrder = () => {
+    // --- DELETE (DELETE) Operation ---
+    const handleDeleteOrder = async () => {
         if (!selectedOrder) return;
-        const updatedOrders = orders.filter(o => o.timestamp !== selectedOrder.timestamp);
-        localStorage.setItem('orders', JSON.stringify(updatedOrders));
-        fetchOrders(); // Re-fetch to update UI
-        setDialogState(null);
+
+        try {
+            const response = await fetch('/api/orders', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                // Use the unique timestamp as the key for the delete
+                body: JSON.stringify({ timestamp: selectedOrder.timestamp }), 
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete order.');
+            }
+
+            fetchOrders(); // Re-fetch to update UI
+            setDialogState(null);
+            alert(`Order ${selectedOrder.id} deleted successfully.`);
+
+        } catch (error) {
+            console.error("Delete error:", error);
+            const errorMessage = (error as Error).message || 'Failed to delete order.';
+            alert(errorMessage);
+        }
     };
     
+    // Helper functions (remain the same)
     const getStatusColor = (status: Order['status']) => {
         switch (status) {
             case 'Pending': return 'bg-yellow-100 text-yellow-800';
@@ -76,7 +128,6 @@ export default function OrdersContent() {
         }
     };
     
-    // Helper to get the first name
     const getFirstName = (fullName: string) => {
         return fullName.split(' ')[0];
     };
@@ -89,7 +140,15 @@ export default function OrdersContent() {
                     <span className="font-semibold text-gray-600">{orders.length} {orders.length === 1 ? 'Order' : 'Orders'}</span>
                 </div>
 
-                {orders.length === 0 ? (
+                {/* --- Loading State Display --- */}
+                {isLoading ? (
+                    <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+                        <p className="text-gray-500 flex items-center justify-center gap-2">
+                           <svg className="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                           Fetching orders from database...
+                        </p>
+                    </div>
+                ) : orders.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
                         <p className="text-gray-500">No orders have been placed yet.</p>
                     </div>
@@ -100,7 +159,7 @@ export default function OrdersContent() {
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
                                         <h3 className="font-bold text-xl font-serif mb-2 text-gray-800">{order.title}</h3>
-                                        <p className="text-sm text-gray-500">Order ID: {order.id}</p>
+                                        <p className="text-sm text-gray-500">Order Ref: {order.timestamp.slice(-10)}</p> {/* Using timestamp slice as a ref */}
                                     </div>
                                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusColor(order.status)}`}>{order.status}</span>
                                 </div>
@@ -138,7 +197,7 @@ export default function OrdersContent() {
                 )}
             </div>
 
-            {/* ====== Update Status Dialog ====== */}
+            {/* ====== Update Status Dialog (calls handleUpdateStatus) ====== */}
             {dialogState === 'update' && selectedOrder && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setDialogState(null)}>
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
@@ -163,7 +222,7 @@ export default function OrdersContent() {
                 </div>
             )}
 
-            {/* ====== Delete Confirmation Dialog ====== */}
+            {/* ====== Delete Confirmation Dialog (calls handleDeleteOrder) ====== */}
             {dialogState === 'delete' && selectedOrder && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setDialogState(null)}>
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
@@ -182,4 +241,3 @@ export default function OrdersContent() {
         </>
     );
 }
-
