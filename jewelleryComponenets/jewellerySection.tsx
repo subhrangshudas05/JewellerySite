@@ -40,7 +40,7 @@ const JewelrySections = () => {
 
     const trending = [
         { id: 1, name: 'Auspicious Occasion', image: 'https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw04fafb24/homepage/trendingNow/auspicious-trending.jpg' },
-        { id: 2, name: 'Gifting Jewellery', image: 'https://www.caratlane.com/blog/wp-content/uploads/2023/01/148Artboard-2.jpg' },
+        { id: 2, name: 'Gifting Jewellery', image: 'https://i.pinimg.com/736x/ef/74/df/ef74df3b3b3549f1035d383da04c4d54.jpg' },
         { id: 3, name: 'Drops of Radiance', image: 'https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw14cb72b2/homepage/trendingNow/drops-of-radiance.jpg' },
     ];
 
@@ -61,7 +61,7 @@ const JewelrySections = () => {
                     <p className="text-stone-600 text-sm tracking-wide">Shop by Categories</p>
                 </motion.div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     {categories.map((category) => (
                         <motion.div
                             key={category.id}
@@ -79,7 +79,7 @@ const JewelrySections = () => {
                                 />
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                             </div>
-                            <h3 className="text-center text-stone-900 text-sm  transition-all duration-300 group-hover:tracking-widest font-light">
+                            <h3 className="text-center text-stone-900 text-base  transition-all duration-300 group-hover:tracking-widest font-light">
                                 {category.name}
                             </h3>
                         </motion.div>

@@ -4,19 +4,27 @@ import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ChevronDown, Filter, Plus, X } from 'lucide-react';
 import Image from 'next/image';
+import { JewelryProduct } from '@/types/jewellery';
+import { BangleProduct } from "@/types/bangles";
+import { RingProduct } from "@/types/ring";
+import { EarringProduct } from "@/types/earrings";
 
 // Import both data lists
 import { earringList } from '@/data/jewellery/earringProducts';
 import { ringList } from '@/data/jewellery/ringProducts';
+import { bangleList } from '@/data/jewellery/bangleProducts';
+import { chainList } from '@/data/jewellery/chainProduct';
 
 import JewelleryProductCard from '@/cards/jewelleryProduct';
 
-// Configuration object to hold dynamic data based on the route
+type AllProducts = RingProduct | EarringProduct | BangleProduct; // Add other types like RingProduct
+
 const productConfig: {
   [key: string]: {
     title: string;
     imageSrc: string;
-    dataList: any; // You could type this more strictly if you have a shared product type
+    // FIX: Use an index signature that returns the union of ALL product types
+    dataList: { [id: string]: AllProducts }; 
     category: string;
   }
 } = {
@@ -31,6 +39,18 @@ const productConfig: {
     imageSrc: '/ring.jpg',
     dataList: ringList,
     category: 'finger-rings', // Category to pass to the card
+  },
+  'bangles': {
+    title: 'Bangles',
+    imageSrc: '/bangles.jpg',
+    dataList: bangleList,
+    category: 'bangles', // Category to pass to the card
+  },
+  'chains': {
+    title: 'Chains',
+    imageSrc: '/chains.jpg',
+    dataList: bangleList,
+    category: 'bangles', // Category to pass to the card
   },
 };
 
@@ -181,9 +201,7 @@ const Page = () => {
           <div className="w-full pt-0 md:pt-4 pb-6 md:pb-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
               {Object.entries(config.dataList).map(([id, product]) => {
-                // Casting product to 'any' here, but you could define a common
-                // 'Product' type in an interface and import it for better type safety
-                const prod = product as any;
+                const prod = product as JewelryProduct;
                 return (
                   <JewelleryProductCard
                     key={id}
