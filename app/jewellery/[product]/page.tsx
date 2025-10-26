@@ -1,12 +1,55 @@
 'use client'
 
 import React, { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { ChevronDown, Filter, Plus, X } from 'lucide-react';
-import Image from 'next/image'
+import Image from 'next/image';
+
+// Import both data lists
+import { earringList } from '@/data/jewellery/earringProducts';
 import { ringList } from '@/data/jewellery/ringProducts';
+
 import JewelleryProductCard from '@/cards/jewelleryProduct';
 
+// Configuration object to hold dynamic data based on the route
+const productConfig: {
+  [key: string]: {
+    title: string;
+    imageSrc: string;
+    dataList: any; // You could type this more strictly if you have a shared product type
+    category: string;
+  }
+} = {
+  'ear-rings': {
+    title: 'Ear Rings',
+    imageSrc: '/earring.jpg',
+    dataList: earringList,
+    category: 'ear-rings', // Category to pass to the card
+  },
+  'finger-rings': {
+    title: 'Finger Rings',
+    imageSrc: '/ring.jpg',
+    dataList: ringList,
+    category: 'finger-rings', // Category to pass to the card
+  },
+};
+
+// Fallback configuration for unknown routes
+const fallbackConfig = {
+  title: 'Products',
+  imageSrc: 'https://placehold.co/1600x600/f0f0f0/999999?text=Products',
+  dataList: {},
+  category: 'all',
+};
+
 const Page = () => {
+  // Get the dynamic route parameter
+  const params = useParams();
+  const productType = params.product as string; // e.g., 'ear-rings' or 'finger-rings'
+
+  // Get the correct configuration, or use fallback
+  const config = productConfig[productType] || fallbackConfig;
+  const resultCount = Object.keys(config.dataList).length;
 
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState('Best Matches');
@@ -32,21 +75,30 @@ const Page = () => {
 
   return (
     <div className='min-h-screen text-3xl text-black'>
-      <div className="h-[40vh] lg:h-[50vh] xl:h-[60vh] max-h-[800px] max-w-[2000px] mx-auto w-full  relative md:mb-4">
-        <Image src="/ring.jpg" alt="rings" fill unoptimized className="object-cover w-full h-full" />
+      {/* Dynamic Banner Image */}
+      <div className="h-[40vh] lg:h-[50vh] xl:h-[60vh] max-h-[800px] max-w-[2000px] mx-auto w-full relative md:mb-4">
+        <Image
+          src={config.imageSrc}
+          alt={config.title}
+          fill
+          unoptimized
+          className="object-cover w-full h-full"
+          onError={(e) => {
+            // Fallback in case the image fails to load
+            e.currentTarget.src = `https://placehold.co/1600x600/f0f0f0/999999?text=${config.title}`;
+          }}
+        />
       </div>
       <div className="min-h-screen">
-
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {/* Header */}
+          {/* Header with Dynamic Title and Count */}
           <div className="mb-6 sm:mb-8">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-gray-900">
-              Finger Rings <span className="text-gray-500 font-normal text-2xl sm:text-3xl lg:text-4xl">(147 results)</span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-normal text-gray-900">
+              {config.title} <span className="text-gray-500 font-normal text-2xl sm:text-3xl lg:text-4xl">({resultCount} results)</span>
             </h1>
           </div>
 
-          {/* Filter Bar */}
+          {/* Filter Bar (remains the same) */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             {/* Filters Container */}
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -91,10 +143,10 @@ const Page = () => {
 
               {/* Sort Dropdown */}
               {sortOpen && (
-                <div className="fixed bottom-4 w-[95%] left-1/2 -translate-x-1/2 md:absolute md:right-0 md:top-full transform  mt-2  sm:w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
-                  <div className="px-4 py-3 border-b border-gray-100">
+                <div className="fixed bottom-4 w-[95%] left-1/2 -translate-x-1/2 md:absolute md:right-0 md:top-full transform mt-0 sm:w-64 rounded-2xl shadow-xl border bg-white border-gray-500 p-4 z-50 h-[360px] overflow-y-auto">
+                  <div className="px-4 py-3 border-b border-gray-950">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-gray-900 font-semibold text-sm sm:text-base">Sort By</h3>
+                      <h3 className="text-gray-500 font-semibold text-sm sm:text-base">Sort By</h3>
                       <button
                         onClick={() => setSortOpen(false)}
                         className="text-gray-400 hover:text-gray-600"
@@ -125,27 +177,31 @@ const Page = () => {
             </div>
           </div>
 
+          {/* Dynamic Product Grid */}
           <div className="w-full pt-0 md:pt-4 pb-6 md:pb-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-              {Object.entries(ringList).map(([id, product]) => (
-                // This works perfectly!
-                <JewelleryProductCard
-                  key={id}
-                  id={id}
-                  product={product}
-                  category="finger-rings"
-                />
-              ))}
+              {Object.entries(config.dataList).map(([id, product]) => {
+                // Casting product to 'any' here, but you could define a common
+                // 'Product' type in an interface and import it for better type safety
+                const prod = product as any;
+                return (
+                  <JewelleryProductCard
+                    key={id}
+                    id={id}
+                    product={prod}
+                    category={config.category} // Pass the dynamic category
+                  />
+                )
+              })}
             </div>
           </div>
-
 
         </div>
 
         {/* Overlay when sort is open */}
         {sortOpen && (
           <div
-            className="fixed inset-0  bg-black/20 backdrop-blur-xl z-40"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             onClick={() => setSortOpen(false)}
           />
         )}
@@ -156,3 +212,4 @@ const Page = () => {
 }
 
 export default Page
+

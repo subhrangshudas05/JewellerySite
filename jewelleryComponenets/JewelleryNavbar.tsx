@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import SideMenu from './SideMenu';
 import { useRouter } from 'next/navigation'
+import Link from 'next/link';
 
 // ICONS FROM LUCIDE-REACT
 // You'll need to install lucide-react: npm install lucide-react
@@ -53,13 +54,13 @@ interface IconWrapperProps {
 
 // This component creates the underline hover effect that expands from the middle
 const NavLink: React.FC<NavLinkProps> = ({ href, children, active = false }) => (
-    <a href={href} className="relative group py-2 text-sm font-medium text-gray-700 hover:text-red-800 hover:font-bold transition-all">
+    <Link href={href} className="relative group py-2 text-sm font-medium text-gray-700 hover:text-red-800 hover:font-bold transition-all">
         <span>{children}</span>
         <span
             className={`absolute bottom-0 left-0 w-full h-[2px] bg-red-800 transform transition-transform duration-300 ease-out origin-center ${active ? 'scale-x-100' : 'scale-x-0'
                 } group-hover:scale-x-100`}
         />
-    </a>
+    </Link>
 );
 
 // A wrapper for icons to provide consistent styling and a badge
@@ -108,7 +109,6 @@ const JewelleryNavbar: React.FC = () => {
     return (
         <>
 
-
             <header className="sticky top-0 left-0 w-full z-50 bg-amber-50 backdrop-blur-sm shadow-sm text-black poppins">
                 {/* --- DESKTOP NAVIGATION (lg and up) --- */}
                 <div className="hidden lg:block">
@@ -149,14 +149,14 @@ const JewelleryNavbar: React.FC = () => {
                                     <div className="absolute top-full right-0 mt-3 w-56 bg-white rounded-lg shadow-lg overflow-hidden translate-x-1/2
                                             opacity-0 invisible group-hover:opacity-100 group-hover:visible
                                             transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
-                                        <a href="#" className="flex items-center gap-4 px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
+                                        <Link href="#" className="flex items-center gap-4 px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
                                             <Gift size={20} />
                                             <span>Log in / Sign up</span>
-                                        </a>
-                                        <a href="#" className="flex items-center gap-4 px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
+                                        </Link>
+                                        <Link href="#" className="flex items-center gap-4 px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
                                             <MessageSquare size={20} />
                                             <span>Contact Us</span>
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                                 <IconWrapper badgeCount={0}><ShoppingCart size={20} /></IconWrapper>
