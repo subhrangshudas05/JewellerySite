@@ -8,6 +8,7 @@ import { JewelryProduct } from '@/types/jewellery';
 import { BangleProduct } from "@/types/bangles";
 import { RingProduct } from "@/types/ring";
 import { EarringProduct } from "@/types/earrings";
+import { ChainProduct } from "@/types/chains";
 
 // Import both data lists
 import { earringList } from '@/data/jewellery/earringProducts';
@@ -17,7 +18,7 @@ import { chainList } from '@/data/jewellery/chainProduct';
 
 import JewelleryProductCard from '@/cards/jewelleryProduct';
 
-type AllProducts = RingProduct | EarringProduct | BangleProduct; // Add other types like RingProduct
+type AllProducts = RingProduct | EarringProduct | BangleProduct | ChainProduct; // Add other types like RingProduct
 
 const productConfig: {
   [key: string]: {
@@ -49,8 +50,8 @@ const productConfig: {
   'chains': {
     title: 'Chains',
     imageSrc: '/chains.jpg',
-    dataList: bangleList,
-    category: 'bangles', // Category to pass to the card
+    dataList: chainList,
+    category: 'chains', // Category to pass to the card
   },
 };
 

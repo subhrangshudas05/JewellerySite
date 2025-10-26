@@ -92,7 +92,7 @@ export default function EarringDetailPage() {
                 </div>
                 <div className="flex gap-4 w-full max-w-2xl justify-center">
                     {product.images.slice(2, 3).map((img, idx) => (
-                        <div key={idx} className="aspect-square relative w-1/2 cursor-pointer group rounded-xl overflow-hidden" onClick={() => setSelectedImage(img)}>
+                        <div key={idx} className="aspect-square relative w-2/3 cursor-pointer group rounded-xl overflow-hidden" onClick={() => setSelectedImage(img)}>
                             <img src={img} alt={`${product.title} image ${idx + 3}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-120" />
                         </div>
                     ))}

@@ -8,21 +8,22 @@ const IMAGE_SET_1 = [
     ];
 
 const IMAGE_SET_2 = [
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw09e2b39d/images/hi-res/51D2A2CKFAA00_1.jpg?sw=640&sh=640",
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw73c73cc3/images/hi-res/51D2A2CKFAA00_2.jpg?sw=640&sh=640",
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwb84f6a16/images/hi-res/51D2A2CKFAA00_3.jpg?sw=640&sh=640"
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4f6e1309/images/hi-res/51M5A1CAMLA00_1.jpg?sw=640&sh=640",
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4f6e1309/images/hi-res/51M5A1CAMLA00_2.jpg?sw=640&sh=640",
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw4f6e1309/images/hi-res/51M5A1CAMLA00_4.jpg?sw=640&sh=640"
     ];
 
 const IMAGE_SET_3 = [
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw411cedb6/images/hi-res/51D2P1CZYAA00_1.jpg?sw=640&sh=640",
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwabc0441a/images/hi-res/51D2P1CZYAA00_2.jpg?sw=640&sh=640",
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw1dcafa3d/images/hi-res/51D2P1CZYAA00_3.jpg?sw=640&sh=640"
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcb6e5277/images/hi-res/51D5B1CCFAA00_1.jpg?sw=640&sh=640",
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcb6e5277/images/hi-res/51D5B1CCFAA00_2.jpg?sw=640&sh=640",
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcb6e5277/images/hi-res/51D5B1CCFAA00_4.jpg?sw=640&sh=640",
     ];
 
 const IMAGE_SET_4 = [
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw34f3c323/images/hi-res/51D5M1CDMAA00_1.jpg?sw=640&sh=640",
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw78733184/images/hi-res/51D5M1CDMAA00_2.jpg?sw=640&sh=640",
-    "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw384e2bb1/images/hi-res/51D5M1CDMAA00_3.jpg?sw=640&sh=640"
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw9b279841/images/hi-res/504025CIFAA00_1.jpg?sw=640&sh=640",
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw9b279841/images/hi-res/504025CIFAA00_3.jpg?sw=640&sh=640",
+  "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw9b279841/images/hi-res/504025CIFAA00_5.jpg?sw=640&sh=640",
+
     ];
 
 const getImageSet = (index: number) => {

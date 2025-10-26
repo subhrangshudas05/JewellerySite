@@ -30,9 +30,9 @@ const mainNavLinks = [
     { name: 'Gold', href: '/jewellery/rings' },
     { name: 'Diamond', href: '/jewellery/rings' },
     { name: 'Earrings', href: '/jewellery/ear-rings' },
-    { name: 'Rings', href: '/jewellery/finger-rings', active: false }, // Mark 'Rings' as active for styling
+    { name: 'Rings', href: '/jewellery/finger-rings', active: false }, 
     { name: 'Bangles', href: '/jewellery/bangles' },
-    { name: 'Wedding', href: '/jewellery/rings' },
+    { name: 'Chains', href: '/jewellery/chains' },
     { name: 'Gifting', href: '/jewellery/rings' },
     { name: 'Daily Wear', href: '/jewellery/rings' },
     { name: 'Admin', href: '/jewellery/admin-dashboard' },
